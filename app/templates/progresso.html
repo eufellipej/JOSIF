@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Progresso - Concentra+</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+<style>
+  /* Mesmos estilos do usuario.html */
+  body {
+    background: linear-gradient(135deg, #d0e7ff, #a3c9ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh; margin: 0; overflow-x: hidden;
+  }
+  #menuBtn {
+    position: fixed; top: 15px; left: 15px; z-index: 1100;
+    width: 35px; height: 30px;
+    cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  #menuBtn div {
+    height: 4px; background-color: #2a71d0; border-radius: 2px; transition: all 0.3s ease;
+  }
+  #menuBtn.active div:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+  #menuBtn.active div:nth-child(2) {
+    opacity: 0;
+  }
+  #menuBtn.active div:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+  }
+  #sidebar {
+    position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
+    background-color: #2a71d0; box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+    padding-top: 60px; transition: left 0.3s ease; z-index: 1050; overflow-y: auto;
+  }
+  #sidebar.active { left: 0; }
+  #sidebar ul { list-style: none; padding: 0; margin: 0; }
+  #sidebar ul li { margin: 0; }
+  #sidebar ul li a {
+    display: block; padding: 15px 25px;
+    color: #eaf4ff; font-weight: 600; font-size: 1.1rem;
+    text-decoration: none; border-left: 4px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  #sidebar ul li a:hover, #sidebar ul li a:focus {
+    background-color: #4285f4;
+    border-left: 4px solid #a3d1ff;
+    color: #fff;
+    outline: none;
+  }
+  #overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: rgba(0,0,0,0.4);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease; z-index: 1040;
+  }
+  #overlay.active { opacity: 1; visibility: visible; }
+  .content {
+    padding: 2rem 3rem; margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+  #sidebar.active ~ .content { margin-left: 260px; }
+  .btn-home-container {
+    text-align: center; margin-bottom: 1.5rem;
+  }
+  .btn-home {
+    background-color: #2a71d0; color: white;
+    font-weight: 600; padding: 0.5rem 2rem;
+    border: none; border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(42, 113, 208, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-home:hover, .btn-home:focus {
+    background-color: #1f52a3;
+    box-shadow: 0 6px 16px rgba(31, 82, 163, 0.7);
+    outline: none;
+    color: white;
+    text-decoration: none;
+  }
+  .jumbotron {
+    background: #f0f9ffcc; padding: 3rem 2rem; border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+    color: #0d47a1; text-align: center; margin-top: 0;
+  }
+  .jumbotron h1 {
+    font-weight: 700; font-size: 3rem; margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  .jumbotron p {
+    font-size: 1.25rem; font-weight: 500; color: #1565c0;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+  }
+  h2 {
+    color: #0d47a1; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem;
+    border-bottom: 3px solid #4285f4; padding-bottom: 0.3rem;
+  }
+  table {
+    background-color: white; border-radius: 0.5rem; overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  }
+  thead {
+    background-color: #4285f4; color: white;
+  }
+  tbody tr:hover {
+    background-color: #d9eaff; transition: background-color 0.3s ease;
+  }
+  .table th, .table td {
+    vertical-align: middle; text-align: center;
+    font-size: 1rem; font-weight: 500; padding: 0.75rem 1rem;
+  }
+  #sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+  #sidebar::-webkit-scrollbar-thumb {
+    background: #1861b1; border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+  <div id="menuBtn" aria-label="Abrir menu de navegação" role="button" tabindex="0">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <nav id="sidebar" aria-label="Menu principal">
+    <ul>
+      <li><a href="/usuario/">Usuários</a></li>
+      <li><a href="/perfil_aluno/">Perfil do Aluno</a></li>
+      <li><a href="/atividade/">Atividades</a></li>
+      <li><a href="/participacao/">Participações</a></li>
+      <li><a href="/notificacao/">Notificações</a></li>
+      <li><a href="/relatorio/">Relatórios</a></li>
+      <li><a href="/personalizacao/">Personalização</a></li>
+      <li><a href="/dispositivo/">Dispositivos</a></li>
+      <li><a href="/turma/">Turmas</a></li>
+      <li><a href="/feedback/">Feedback</a></li>
+      <li><a href="/aula/">Aulas</a></li>
+      <li><a href="/progresso/">Progresso</a></li>
+      <li><a href="/admin/">Administração</a></li>
+    </ul>
+  </nav>
+  <div id="overlay"></div>
+  <div class="content">
+    <div class="btn-home-container">
+      <a href="/" class="btn-home" role="button" aria-label="Ir para a página inicial">Home</a>
+    </div>
+    <div class="jumbotron">
+      <h1>Progresso</h1>
+      <p>Acompanhe o progresso dos alunos nas atividades.</p>
+    </div>
+    <h2>Detalhes do Progresso</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>Atividade</th>
+          <th>Status</th>
+          <th>Data de Conclusão</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for progresso in progressos %}
+        <tr>
+          <td>{{ progresso.aluno.nome }}</td>
+          <td>{{ progresso.atividade.titulo }}</td>
+          <td>{{ progresso.status }}</td>
+          <td>{{ progresso.data_conclusao|date:"d/m/Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum progresso registrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  function toggleMenu() {
+    menuBtn.classList.toggle('active');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+  menuBtn.addEventListener('click', toggleMenu);
+  overlay.addEventListener('click', toggleMenu);
+  menuBtn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleMenu();
+    }
+  });
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
