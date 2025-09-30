@@ -1,31 +1,344 @@
-  {% extends 'base.html' %}
-  {% block title %}Página Inicial - Concentra+{% endblock %}
-  {% block content %}
-    <div class="jumbotron">
-      <h1>Bem-vindo ao Concentra+</h1>
-      <p>Sistema Acadêmico focado em concentração estudantil, gamificação e desempenho do aluno.</p>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Página Inicial - Concentra+{% endblock %}
+{% block extra_head %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        color: white;
+        padding: 5rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='2' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 2rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-hero {
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-hero-primary {
+        background: white;
+        color: #2a71d0;
+        border: 2px solid white;
+    }
+    
+    .btn-hero-primary:hover {
+        background: transparent;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn-hero-outline {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+    
+    .btn-hero-outline:hover {
+        background: white;
+        color: #2a71d0;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .features-section {
+        padding: 5rem 0;
+        background: #f8f9fa;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2a71d0;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-text {
+        color: #6c757d;
+        line-height: 1.6;
+    }
+    
+    .stats-section {
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        color: white;
+        padding: 4rem 0;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 1.2rem;
+        font-weight: 300;
+        opacity: 0.9;
+    }
+    
+    .cta-section {
+        padding: 5rem 0;
+        background: white;
+        text-align: center;
+    }
+    
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2a71d0;
+        margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+        font-size: 1.2rem;
+        color: #6c757d;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Animações */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-hero {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Seção Hero -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Concentra+</h1>
+            <p class="hero-subtitle">Sistema Acadêmico inovador que transforma a concentração estudantil através de gamificação, acompanhamento personalizado e ferramentas inteligentes.</p>
+            <div class="hero-buttons">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'perfil_aluno' %}" class="btn btn-hero btn-hero-primary">Acessar Plataforma</a>
+                    <a href="{% url 'atividade' %}" class="btn btn-hero btn-hero-outline">Ver Atividades</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-hero btn-hero-primary">Começar Agora</a>
+                    <a href="{% url 'login' %}" class="btn btn-hero btn-hero-outline">Fazer Login</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <h2>Tabela de Usuários</h2>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Tipo</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for usuario in usuarios %}
-        <tr>
-          <td>{{ usuario.nome }}</td>
-          <td>{{ usuario.email }}</td>
-          <td>{{ usuario.get_tipo_usuario_display }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3">Nenhum usuário encontrado.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endblock %}
+</section>
+
+<!-- Seção de Recursos -->
+<section class="features-section">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="display-4 font-weight-bold text-primary">Recursos Inovadores</h2>
+                <p class="lead text-muted">Tudo o que você precisa para melhorar o desempenho acadêmico</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="feature-title">Gamificação</h3>
+                    <p class="feature-text">Sistema de recompensas e conquistas que motiva os alunos a se dedicarem mais aos estudos.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Acompanhamento</h3>
+                    <p class="feature-text">Relatórios detalhados de desempenho e progresso para alunos, professores e responsáveis.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Notificações</h3>
+                    <p class="feature-text">Alertas inteligentes sobre prazos, conquistas e atividades importantes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção de Estatísticas -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="floating">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Aumento no engajamento</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="floating" style="animation-delay: 0.5s;">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Melhora nas notas</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="floating" style="animation-delay: 1s;">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Alunos ativos</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="floating" style="animation-delay: 1.5s;">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Suporte disponível</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title">Pronto para transformar sua experiência educacional?</h2>
+        <p class="cta-text">Junte-se a milhares de alunos e professores que já estão usando o Concentra+ para revolucionar a maneira de aprender e ensinar.</p>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'perfil_aluno' %}" class="btn btn-primary btn-lg px-5 py-3">Acessar Minha Conta</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5 py-3">Criar Conta Gratuita</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Font Awesome para ícones -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    // Adicionando alguns efeitos interativos
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animação de digitação no título
+        const heroTitle = document.querySelector('.hero-title');
+        const originalText = heroTitle.textContent;
+        heroTitle.textContent = '';
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < originalText.length) {
+                heroTitle.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        
+        // Iniciar animação após um breve delay
+        setTimeout(typeWriter, 500);
+        
+        // Efeito parallax suave no hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-section');
+            hero.style.backgroundPositionY = -(scrolled * 0.5) + 'px';
+        });
+    });
+</script>
+{% endblock %}

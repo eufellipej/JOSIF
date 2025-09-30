@@ -1,284 +1,590 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil do Aluno - Concentra+</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-  <style>
-    body {
-      background: linear-gradient(135deg, #d0e7ff, #a3c9ff);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      overflow-x: hidden;
-    }
-    #menuBtn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 1100;
-      width: 35px;
-      height: 30px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    #menuBtn div {
-      height: 4px;
-      background-color: #2a71d0;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-    #menuBtn.active div:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-    #menuBtn.active div:nth-child(2) {
-      opacity: 0;
-    }
-    #menuBtn.active div:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100%;
-      background-color: #2a71d0;
-      box-shadow: 2px 0 12px rgba(0,0,0,0.3);
-      padding-top: 60px;
-      transition: left 0.3s ease;
-      z-index: 1050;
-      overflow-y: auto;
-    }
-    #sidebar.active {
-      left: 0;
-    }
-    #sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    #sidebar ul li {
-      margin: 0;
-    }
-    #sidebar ul li a {
-      display: block;
-      padding: 15px 25px;
-      color: #eaf4ff;
-      font-weight: 600;
-      font-size: 1.1rem;
-      text-decoration: none;
-      border-left: 4px solid transparent;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    #sidebar ul li a:hover,
-    #sidebar ul li a:focus {
-      background-color: #4285f4;
-      border-left: 4px solid #a3d1ff;
-      color: #fff;
-      outline: none;
-    }
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.4);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease;
-      z-index: 1040;
-    }
-    #overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .content {
-      padding: 2rem 3rem;
-      margin-left: 0;
-      transition: margin-left 0.3s ease;
-    }
-    #sidebar.active ~ .content {
-      margin-left: 260px;
-    }
-    .btn-home-container {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .btn-home {
-      background-color: #2a71d0;
-      color: white;
-      font-weight: 600;
-      padding: 0.5rem 2rem;
-      border: none;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 12px rgba(42, 113, 208, 0.5);
-      cursor: pointer;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-home:hover,
-    .btn-home:focus {
-      background-color: #1f52a3;
-      box-shadow: 0 6px 16px rgba(31, 82, 163, 0.7);
-      outline: none;
-      color: white;
-      text-decoration: none;
-    }
-    .jumbotron {
-      background: #f0f9ffcc;
-      padding: 3rem 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-      color: #0d47a1;
-      text-align: center;
-      margin-top: 0;
-    }
-    .jumbotron h1 {
-      font-weight: 700;
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-    }
-    .jumbotron p {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #1565c0;
-      text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
-    }
-    h2 {
-      color: #0d47a1;
-      font-weight: 700;
-      margin-top: 3rem;
-      margin-bottom: 1rem;
-      border-bottom: 3px solid #4285f4;
-      padding-bottom: 0.3rem;
-    }
-    table {
-      background-color: white;
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    }
-    thead {
-      background-color: #4285f4;
-      color: white;
-    }
-    tbody tr:hover {
-      background-color: #d9eaff;
-      transition: background-color 0.3s ease;
-    }
-    .table th, .table td {
-      vertical-align: middle;
-      text-align: center;
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 0.75rem 1rem;
-    }
-    #sidebar::-webkit-scrollbar {
-      width: 6px;
-    }
-    #sidebar::-webkit-scrollbar-thumb {
-      background: #1861b1;
-      border-radius: 3px;
-    }
-  </style>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Perfil do Aluno - Concentra+{% endblock %}
 
-  <div id="menuBtn" aria-label="Abrir menu de navegação" role="button" tabindex="0">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+{% block extra_head %}
+<style>
+    .profile-container {
+        padding: 2rem 0;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='2' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+        z-index: 1;
+    }
+    
+    .profile-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #2a71d0;
+        border: 4px solid white;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .profile-info {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-course {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-stats {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2a71d0;
+        margin: 0;
+    }
+    
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #5f6368;
+    }
+    
+    .info-value {
+        color: #2a71d0;
+        font-weight: 500;
+    }
+    
+    .progress-container {
+        margin: 1.5rem 0;
+    }
+    
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+    
+    .badge-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .badge {
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .achievement-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .achievement-item {
+        text-align: center;
+    }
+    
+    .achievement-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.5rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .achievement-name {
+        font-size: 0.8rem;
+        color: #5f6368;
+    }
+    
+    .students-grid {
+        display: grid;
+        gap: 1rem;
+    }
+    
+    .student-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .student-card:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+    
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .student-info {
+        flex: 1;
+    }
+    
+    .student-name {
+        font-weight: 600;
+        margin: 0;
+        color: #2a71d0;
+    }
+    
+    .student-course {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin: 0;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2a71d0;
+        margin: 3rem 0 2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #2a71d0;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary-action {
+        background: linear-gradient(135deg, #2a71d0 0%, #1a4fa3 100%);
+        color: white;
+        border: none;
+    }
+    
+    .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 113, 208, 0.4);
+        color: white;
+    }
+    
+    .btn-outline-action {
+        background: transparent;
+        color: #2a71d0;
+        border: 2px solid #2a71d0;
+    }
+    
+    .btn-outline-action:hover {
+        background: #2a71d0;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .profile-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-stats {
+            justify-content: center;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+        }
+        
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .profile-card {
+        animation: fadeIn 0.6s ease-out;
+    }
+    
+    .profile-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .profile-card:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+</style>
+{% endblock %}
 
-  <nav id="sidebar" aria-label="Menu principal">
-    <ul>
-      <li><a href="/usuario/">Usuários</a></li>
-      <li><a href="/perfil_aluno/">Perfil do Aluno</a></li>
-      <li><a href="/atividade/">Atividades</a></li>
-      <li><a href="/participacao/">Participações</a></li>
-      <li><a href="/notificacao/">Notificações</a></li>
-      <li><a href="/relatorio/">Relatórios</a></li>
-      <li><a href="/personalizacao/">Personalização</a></li>
-      <li><a href="/dispositivo/">Dispositivos</a></li>
-      <li><a href="/turma/">Turmas</a></li>
-      <li><a href="/feedback/">Feedback</a></li>
-      <li><a href="/aula/">Aulas</a></li>
-      <li><a href="/progresso/">Progresso</a></li>
-      <li><a href="/admin/">Administração</a></li>
-    </ul>
-  </nav>
-
-  <div id="overlay"></div>
-
-  <div class="content">
-
-    <div class="btn-home-container">
-      <a href="/" class="btn-home" role="button" aria-label="Ir para a página inicial">Home</a>
+{% block content %}
+<div class="profile-container">
+    <!-- Cabeçalho do Perfil -->
+    <div class="profile-header">
+        <div class="profile-content">
+            <div class="profile-avatar">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">Carlos Silva</h1>
+                <p class="profile-course">Engenharia de Software - 3º Período</p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">85%</span>
+                        <span class="stat-label">Desempenho</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">24</span>
+                        <span class="stat-label">Conquistas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Nível</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="jumbotron">
-      <h1>Perfis dos Alunos</h1>
-      <p>Veja os perfis dos alunos cadastrados.</p>
+    <!-- Grid de Informações -->
+    <div class="profile-grid">
+        <!-- Informações Pessoais -->
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="card-title">Informações Pessoais</h2>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Idade:</span>
+                    <span class="info-value">21 anos</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">carlos.silva@email.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Telefone:</span>
+                    <span class="info-value">(11) 99999-9999</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data de Ingresso:</span>
+                    <span class="info-value">02/2023</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desempenho Acadêmico -->
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="card-title">Desempenho Acadêmico</h2>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Matemática</span>
+                    <span>92%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 92%;"></div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Programação</span>
+                    <span>88%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 88%;"></div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Banco de Dados</span>
+                    <span>76%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 76%;"></div>
+                </div>
+            </div>
+            <div class="badge-container">
+                <span class="badge">🎯 Top Performace</span>
+                <span class="badge">🚀 Maior Progresso</span>
+            </div>
+        </div>
+
+        <!-- Conquistas -->
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h2 class="card-title">Conquistas</h2>
+            </div>
+            <div class="achievement-grid">
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="achievement-name">Ouro</div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="achievement-name">Estrela</div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="achievement-name">Rápido</div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="achievement-name">Sábio</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h2>Perfis</h2>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Aluno</th>
-          <th>Idade</th>
-          <th>Curso</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for perfil in perfis %}
-        <tr>
-          <td>{{ perfil.aluno.nome }}</td>
-          <td>{{ perfil.idade }}</td>
-          <td>{{ perfil.curso }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3">Nenhum perfil encontrado.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <!-- Lista de Colegas -->
+    <h2 class="section-title">Colegas de Turma</h2>
+    <div class="profile-card">
+        <div class="card-header">
+            <div class="card-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h2 class="card-title">Turma de Engenharia de Software</h2>
+        </div>
+        <div class="students-grid">
+            <div class="student-card">
+                <div class="student-avatar">A</div>
+                <div class="student-info">
+                    <h3 class="student-name">Ana Oliveira</h3>
+                    <p class="student-course">Engenharia de Software</p>
+                </div>
+            </div>
+            <div class="student-card">
+                <div class="student-avatar">P</div>
+                <div class="student-info">
+                    <h3 class="student-name">Pedro Santos</h3>
+                    <p class="student-course">Engenharia de Software</p>
+                </div>
+            </div>
+            <div class="student-card">
+                <div class="student-avatar">M</div>
+                <div class="student-info">
+                    <h3 class="student-name">Mariana Costa</h3>
+                    <p class="student-course">Engenharia de Software</p>
+                </div>
+            </div>
+            <div class="student-card">
+                <div class="student-avatar">L</div>
+                <div class="student-info">
+                    <h3 class="student-name">Lucas Pereira</h3>
+                    <p class="student-course">Engenharia de Software</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  </div>
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+        <a href="#" class="btn btn-action btn-primary-action">
+            <i class="fas fa-download mr-2"></i>Baixar Relatório
+        </a>
+        <a href="#" class="btn btn-action btn-outline-action">
+            <i class="fas fa-chart-pie mr-2"></i>Ver Estatísticas
+        </a>
+        <a href="#" class="btn btn-action btn-outline-action">
+            <i class="fas fa-cog mr-2"></i>Editar Perfil
+        </a>
+    </div>
+</div>
+{% endblock %}
 
-  <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-
-    function toggleMenu() {
-      menuBtn.classList.toggle('active');
-      sidebar.classList.toggle('active');
-      overlay.classList.toggle('active');
-    }
-
-    menuBtn.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', toggleMenu);
-
-    menuBtn.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleMenu();
-      }
+{% block extra_scripts %}
+<!-- Font Awesome para ícones -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animação de carregamento das barras de progresso
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500);
+        });
+        
+        // Efeito de hover nos cards de estudantes
+        const studentCards = document.querySelectorAll('.student-card');
+        studentCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateX(5px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateX(0)';
+            });
+        });
     });
-  </script>
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-</body>
-</html>
+</script>
+{% endblock %}
