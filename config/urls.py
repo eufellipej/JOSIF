@@ -5,12 +5,10 @@ from app.auth_views import LoginView, RegisterView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('', IndexView.as_view(), name='index'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(), name='logout'),
-
     path('usuario/', UsuarioView.as_view(), name='usuario'),                             # RF01
     path('perfil_aluno/', PerfilAlunoView.as_view(), name='perfil_aluno'),               # RF02
     path('atividade/', AtividadeView.as_view(), name='atividade'),                       # RF03
